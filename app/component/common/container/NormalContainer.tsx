@@ -11,7 +11,11 @@ const NormalContainer: FC<Props> = (props) => {
     const {children} = props
 
     return (
-        <Container>
+        <Container
+            sx={{
+                mt: 4
+            }}
+        >
             {children}
         </Container>
     )
