@@ -1,12 +1,65 @@
 "use client"
 
-import { Card } from "@mui/material"
-import { FC, memo } from "react"
+import useLogin from "@/app/hook/useLogin"
+import { Box, Button, Card, CardContent, Stack, TextField } from "@mui/material"
+import { FC, memo, useState } from "react"
 
 const LoginFormCard: FC = memo(() => {
+    const {loginLoad, login} = useLogin()
+    const [loginData, setLoginData] = useState({
+        userName: "",
+        password: ""
+    })
+
+    const handleLogin = () => {
+        login(loginData)
+    }
+
     return (
-        <Card>
-            
+        <Card
+            sx={{
+                width: 500,
+                mx: "auto",
+                px: 5,
+                "@media screen and (max-width: 500px)": {
+                    width: "95%"
+                }
+            }}
+        >
+            <CardContent>
+                <Box mb={3}>
+                    ログイン
+                </Box>
+
+                <Stack spacing={4}>
+                    <TextField
+                        type="text"
+                        variant="filled"
+                        label="ユーザー名"
+                        size="small"
+                        value={loginData.userName}
+                        onChange={(e) => setLoginData({...loginData, userName: e.target.value})}
+                    />
+
+                    <TextField
+                        type="password"
+                        variant="filled"
+                        label="パスワード"
+                        size="small"
+                        value={loginData.password}
+                        onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                    />
+
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        loading={loginLoad}
+                        onClick={handleLogin}
+                    >
+                        ログイン
+                    </Button>
+                </Stack>
+            </CardContent>
         </Card>
     )
 })

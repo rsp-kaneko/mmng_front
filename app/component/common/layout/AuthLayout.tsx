@@ -17,7 +17,7 @@ const AuthLayout: FC<Props> = (props) => {
         <CustomContext.Provider
             value={{
                 REFRESH: refresh,
-                SET_REFRESH: setRefresh
+                SET_REFRESH: setRefresh,
             }}
         >
             {children}

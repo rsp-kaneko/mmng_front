@@ -15,7 +15,10 @@ const GuestHeader: FC = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                px: 8
+                px: 8,
+                "@media screen and (max-width: 500px)": {
+                    px: 2
+                }
             }}
         >
             <Box>
