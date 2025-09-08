@@ -2,7 +2,9 @@
 
 import CustomContext from "@/app/context/CustomContext"
 import useLogin from "@/app/hook/useLogin"
-import { FC, ReactNode, useState } from "react"
+import { FC, ReactNode, useEffect, useState } from "react"
+import { Box, CircularProgress } from "@mui/material"
+import AuthHeader from "../header/AuthHeader"
 
 type Props = {
     children: ReactNode
@@ -10,8 +12,12 @@ type Props = {
 
 const AuthLayout: FC<Props> = (props) => {
     const {children} = props
-    const {loginCheck} = useLogin()
+    const {loginCheck, loggedIn} = useLogin()
     const [refresh, setRefresh] = useState(0)
+
+    useEffect(() => {
+        loginCheck()
+    }, [])
 
     return (
         <CustomContext.Provider
@@ -20,7 +26,22 @@ const AuthLayout: FC<Props> = (props) => {
                 SET_REFRESH: setRefresh,
             }}
         >
-            {children}
+            <AuthHeader />
+
+            {loggedIn ? (
+                <>{children}</>
+            ) : (
+                <Box sx={{
+                    position: "absolute",
+                    inset: 0,
+                    m: "auto",
+                    textAlign: "center",
+                    width: 120,
+                    height: 120,
+                }}>
+                    <CircularProgress />
+                </Box>
+            )}
         </CustomContext.Provider>
     )
 }
