@@ -4,19 +4,20 @@ import CustomContext from "@/app/context/CustomContext"
 import useLogin from "@/app/hook/useLogin"
 import { FC, ReactNode, useEffect, useState } from "react"
 import { Box, CircularProgress } from "@mui/material"
-import AuthHeader from "../header/AuthHeader"
+import DefaultHeader from "../header/DefaultHeader"
 
 type Props = {
     children: ReactNode
+    type: "auth" | "guest"
 }
 
-const AuthLayout: FC<Props> = (props) => {
-    const {children} = props
-    const {loginCheck, loggedIn} = useLogin()
+const DefaultLayout: FC<Props> = (props) => {
+    const {children, type} = props
+    const {loginCheck, loggedIn, authData} = useLogin()
     const [refresh, setRefresh] = useState(0)
 
     useEffect(() => {
-        loginCheck()
+        loginCheck(type)
     }, [])
 
     return (
@@ -24,11 +25,14 @@ const AuthLayout: FC<Props> = (props) => {
             value={{
                 REFRESH: refresh,
                 SET_REFRESH: setRefresh,
+                AUTH: authData.auth,
+                USER_ID: authData.userId,
+                USER_NAME: authData.userName
             }}
         >
-            <AuthHeader />
+            <DefaultHeader />
 
-            {loggedIn ? (
+            {loggedIn || type == "guest" ? (
                 <>{children}</>
             ) : (
                 <Box sx={{
@@ -46,4 +50,4 @@ const AuthLayout: FC<Props> = (props) => {
     )
 }
 
-export default AuthLayout
+export default DefaultLayout

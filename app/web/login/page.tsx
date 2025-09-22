@@ -1,26 +1,15 @@
 "use client"
 
 import NormalContainer from "@/app/component/common/container/NormalContainer"
-import GuestLayout from "@/app/component/common/layout/GuestLayout"
+import DefaultLayout from "@/app/component/common/layout/DefaultLayout"
 import LoginFormCard from "@/app/component/login/LoginFormCard"
-import useLogin from "@/app/hook/useLogin"
 import { Box } from "@mui/material"
-import { redirect } from "next/navigation"
-import { FC, useEffect } from "react"
+import { FC } from "react"
 
 const LoginPage: FC = () => {
-    const {loginCheck, loggedIn} = useLogin()
-
-    useEffect(() => {
-        loginCheck()
-    }, [])
-
-    useEffect(() => {
-        loggedIn && redirect("/web/user")
-    }, [loggedIn])
 
     return (
-        <GuestLayout>
+        <DefaultLayout type="guest">
             <NormalContainer>
                 <Box>
                     
@@ -28,7 +17,7 @@ const LoginPage: FC = () => {
 
                 </Box>
             </NormalContainer>
-        </GuestLayout>
+        </DefaultLayout>
     )
 }
 

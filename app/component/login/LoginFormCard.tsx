@@ -1,15 +1,25 @@
 "use client"
 
+import CustomContext from "@/app/context/CustomContext"
 import useLogin from "@/app/hook/useLogin"
 import { Box, Button, Card, CardContent, Stack, TextField } from "@mui/material"
-import { FC, memo, useState } from "react"
+import { FC, memo, useContext, useEffect, useState } from "react"
 
 const LoginFormCard: FC = memo(() => {
+    const {AUTH} = useContext(CustomContext)
     const {loginLoad, login} = useLogin()
     const [loginData, setLoginData] = useState({
         userName: "",
         password: ""
     })
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            if (AUTH) {
+                location.href = "/web"
+            }
+        }
+    }, [AUTH])
 
     const handleLogin = () => {
         login(loginData)

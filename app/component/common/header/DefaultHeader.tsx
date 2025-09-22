@@ -1,10 +1,19 @@
 "use client"
 
+import CustomContext from "@/app/context/CustomContext"
+import useLogin from "@/app/hook/useLogin"
 import { Box } from "@mui/material"
 import Link from "next/link"
-import { FC } from "react"
+import { FC, useContext } from "react"
 
-const GuestHeader: FC = () => {
+const DefaultHeader: FC = () => {
+    const {AUTH} = useContext(CustomContext)
+    const {logout} = useLogin()
+
+    const handleLogout = () => {
+        logout()
+    }
+
     return (
         <Box
             sx={{
@@ -32,10 +41,17 @@ const GuestHeader: FC = () => {
                 }}
             >
                 <Link href="/web">Top</Link>
-                <Link href="/web/login">Login</Link>
+                {AUTH ? (
+                    <>
+                        <Link href="/web/user" >Setting</Link>
+                        <Link href="" onClick={handleLogout}>Logout</Link>
+                    </>
+                ) : (
+                    <Link href="/web/login">Login</Link>
+                )}
             </Box>
         </Box>
     )
 }
 
-export default GuestHeader
+export default DefaultHeader

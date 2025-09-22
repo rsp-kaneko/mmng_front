@@ -1,12 +1,18 @@
 import { useCallback, useState } from "react"
 import { redirect } from "next/navigation"
 import useAxios from "./useAxios"
+import Swal from "sweetalert2"
 
 const useLogin = () => {
     const [loginLoad, setLoginLoad] = useState(false)
     const [loggedIn, setLoggedIn] = useState(false)
+    const [authData, setAuthData] = useState({
+        auth: false,
+        userId: 0,
+        userName: ""
+    })
 
-    const loginCheck = useCallback(() => {
+    const loginCheck = useCallback((type: string) => {
         if (typeof window !== "undefined") {
             const token: string = String(window.localStorage.getItem("token"))
             if (token !== undefined) {
@@ -16,16 +22,21 @@ const useLogin = () => {
                         if (response.status == 200) {
                             window.localStorage.setItem("userId", response.userId)
                             window.localStorage.setItem("userName", response.userName)
+                            setAuthData({
+                                auth: true,
+                                userId: response.userId,
+                                userName: response.userName
+                            })
                             setLoggedIn(true)
                         } else if (response.status == 400) {
-                            redirect("/web/login")
+                            type == "auth" && redirect("/web/login")
                         }
                     })
                     .catch((error) => {
-                        redirect("/web/login")
+                        type == "auth" && redirect("/web/login")
                     })
             } else {
-                redirect("/web/login")
+                type == "auth" && redirect("/web/login")
             }
         }
     }, [])
@@ -46,7 +57,12 @@ const useLogin = () => {
                     }
 
                 } else if (response.status == 400) {
-                    alert(response.message)
+                    Swal.fire({
+                        title: response.message,
+                        icon: "error",
+                        timer: 1500,
+                        timerProgressBar: true
+                    })
                 } else {
                     console.error(response.message)
                 }
@@ -65,6 +81,7 @@ const useLogin = () => {
     return {
         loginLoad,
         loggedIn,
+        authData,
         loginCheck,
         login,
         logout,

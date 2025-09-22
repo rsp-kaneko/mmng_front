@@ -1,19 +1,29 @@
 "use client"
 
 import NormalContainer from "@/app/component/common/container/NormalContainer";
-import AuthLayout from "@/app/component/common/layout/AuthLayout";
-import { Box } from "@mui/material";
+import DefaultLayout from "@/app/component/common/layout/DefaultLayout";
+import UserInfo from "@/app/component/user/UserInfo";
+import { Grid } from "@mui/material";
 import { FC } from "react";
 
 const UserPage: FC = () => {
+
     return (
-        <AuthLayout>
+        <DefaultLayout type="auth">
             <NormalContainer>
-                <Box>
-                    Security Page
-                </Box>
+                <Grid container spacing={3}>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <UserInfo />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        test
+                    </Grid>
+
+                </Grid>
             </NormalContainer>
-        </AuthLayout>
+        </DefaultLayout>
     )
 }
 
