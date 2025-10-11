@@ -2,9 +2,10 @@
 
 import NormalContainer from "@/app/component/common/container/NormalContainer";
 import DefaultLayout from "@/app/component/common/layout/DefaultLayout";
+import AddBikeCard from "@/app/component/user/AddBikeCard";
 import BikeInfo from "@/app/component/user/BikeInfo";
 import UserInfo from "@/app/component/user/UserInfo";
-import { Grid, Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 import { FC } from "react";
 
 const UserPage: FC = () => {
@@ -14,18 +15,16 @@ const UserPage: FC = () => {
             <NormalContainer>
                 <Grid container spacing={3}>
 
-                    <Grid size={{ xs: 12, md: 6 }}>
-                        <Stack spacing={3}>
-
-                            <UserInfo />
-
-                            <BikeInfo />
-                            
-                        </Stack>
+                    <Grid size={{ xs: 12 }}>
+                        <UserInfo />
                     </Grid>
 
                     <Grid size={{ xs: 12, md: 6 }}>
-                        test
+                        <BikeInfo />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <AddBikeCard />
                     </Grid>
 
                 </Grid>
