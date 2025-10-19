@@ -2,13 +2,30 @@
 
 import CustomContext from "@/app/context/CustomContext"
 import { Avatar, Card, CardContent, CardHeader, Divider, FormControl, FormLabel, Grid, IconButton, InputBase, Paper, Stack } from "@mui/material"
-import { FC, memo, useContext } from "react"
+import { FC, memo, useContext, useEffect } from "react"
 import PersonIcon from '@mui/icons-material/Person'
 import SendIcon from '@mui/icons-material/Send'
 import KeyIcon from '@mui/icons-material/Key'
+import useUser from "@/app/hook/useUser"
 
 const UserInfo: FC = memo(() => {
-    const {USER_ID, USER_NAME} = useContext(CustomContext)
+    const {REFRESH} = useContext(CustomContext)
+    const {userLoad, userData, setUserData, updateUser} = useUser()
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const userName = String(localStorage.getItem("userName"))
+            const userId = Number(localStorage.getItem("userId"))
+            setUserData({
+                userId: userId,
+                userName: userName,
+            })
+        }
+    }, [REFRESH])
+
+    const handleSubmit = (updateType: string) => {
+        updateUser({...userData, updateType})
+    }
 
     return (
         <Card variant="outlined">
@@ -40,9 +57,17 @@ const UserInfo: FC = memo(() => {
                                     type="text"
                                     placeholder="最低1文字以上"
                                     inputProps={{ 'aria-label': 'userName' }}
+                                    value={userData.userName}
+                                    onChange={(e) => setUserData({...userData, userName: e.target.value})}
                                 />
                                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                                <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
+                                <IconButton
+                                    color="primary"
+                                    sx={{ p: '10px' }}
+                                    aria-label="submit"
+                                    onClick={() => handleSubmit("ユーザー名")}
+                                    loading={userLoad}
+                                >
                                     <SendIcon />
                                 </IconButton>
                             </Paper>
@@ -65,9 +90,17 @@ const UserInfo: FC = memo(() => {
                                     placeholder="最低8文字以上"
                                     type="password"
                                     inputProps={{ 'aria-label': 'password' }}
+                                    value={userData.password}
+                                    onChange={(e) => setUserData({...userData, password: e.target.value})}
                                 />
                                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                                <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
+                                <IconButton
+                                    color="primary"
+                                    sx={{ p: '10px' }}
+                                    aria-label="submit"
+                                    onClick={() => handleSubmit("パスワード")}
+                                    loading={userLoad}
+                                >
                                     <SendIcon />
                                 </IconButton>
                             </Paper>

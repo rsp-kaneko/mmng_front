@@ -5,6 +5,7 @@ import useLogin from "@/app/hook/useLogin"
 import { FC, ReactNode, useEffect, useState } from "react"
 import { Box, CircularProgress } from "@mui/material"
 import DefaultHeader from "../header/DefaultHeader"
+import useAuth from "@/app/hook/useAuth"
 
 type Props = {
     children: ReactNode
@@ -14,10 +15,12 @@ type Props = {
 const DefaultLayout: FC<Props> = (props) => {
     const {children, type} = props
     const {loginCheck, loggedIn, authData} = useLogin()
+    const {getCsrfToken} = useAuth()
     const [refresh, setRefresh] = useState(0)
 
     useEffect(() => {
         loginCheck(type)
+        getCsrfToken()
     }, [])
 
     return (

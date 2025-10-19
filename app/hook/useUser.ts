@@ -1,4 +1,7 @@
-import { useState } from "react"
+import { useCallback, useContext, useState } from "react"
+import useAxios from "./useAxios"
+import Swal from "sweetalert2"
+import CustomContext from "../context/CustomContext"
 
 export type Role = {
     roleId: number
@@ -17,6 +20,7 @@ export type User = {
 }
 
 export type UserRequest = {
+    updateType?: string
     userId?: number
     userName?: string
     password?: string
@@ -24,20 +28,63 @@ export type UserRequest = {
 }
 
 const useUser = () => {
+    const { SET_REFRESH } = useContext(CustomContext)
     const [userLoad, setUserLoad] = useState(false)
     const [users, setUsers] = useState<Array<User>>([])
     const [userData, setUserData] = useState<UserRequest>({
+        updateType: "",
         userId: 0,
         userName: "",
         password: "",
         token: "",
     })
 
+    const updateUser = useCallback((data: UserRequest) => {
+        if (data.updateType == "ユーザー名" && data.userName && (data.userName.length < 1 && data.userName.length > 30)) {
+            Swal.fire({
+                title: "1文字以上30文字以内",
+                icon: "error",
+                timer: 1500,
+                timerProgressBar: true,
+            })
+            return
+        }
+        if (data.updateType == "パスワード" && data.password && data.password.length < 8) {
+            Swal.fire({
+                title: "最低8文字以上",
+                icon: "error",
+                timer: 1500,
+                timerProgressBar: true,
+            })
+            return
+        }
+        setUserLoad(true)
+        const request = JSON.stringify(data)
+        useAxios("post", "/api/updateUser", request)
+            .then((response) => {
+                if (response.status == 200) {
+                    if (typeof window !== "undefined" && data.updateType == "ユーザー名") localStorage.setItem("userName", data.userName!)
+                    SET_REFRESH!((cnt) => cnt + 1)
+                    Swal.fire({
+                        title: `${data.updateType}を更新しました。`,
+                        icon: "success",
+                        timer: 1500,
+                        timerProgressBar: true,
+                    })
+                } else {
+                    console.error(response.messages)
+                }
+            })
+            .catch((error) => console.error(error))
+            .finally(() => setUserLoad(false))
+    }, [])
+
     return {
         userLoad,
         users,
         userData,
         setUserData,
+        updateUser,
     }
 }
 
