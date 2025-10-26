@@ -28,35 +28,59 @@ export type UserRequest = {
 }
 
 const useUser = () => {
-    const { SET_REFRESH } = useContext(CustomContext)
+    const { SET_REFRESH, USER_ID, USER_NAME } = useContext(CustomContext)
     const [userLoad, setUserLoad] = useState(false)
     const [users, setUsers] = useState<Array<User>>([])
     const [userData, setUserData] = useState<UserRequest>({
         updateType: "",
-        userId: 0,
-        userName: "",
+        userId: USER_ID,
+        userName: USER_NAME,
         password: "",
         token: "",
     })
 
     const updateUser = useCallback((data: UserRequest) => {
-        if (data.updateType == "ユーザー名" && data.userName && (data.userName.length < 1 && data.userName.length > 30)) {
-            Swal.fire({
-                title: "1文字以上30文字以内",
-                icon: "error",
-                timer: 1500,
-                timerProgressBar: true,
-            })
-            return
+        if (data.updateType == "ユーザー名") {
+            if (data.userName) {
+                if (data.userName.length > 30) {
+                    Swal.fire({
+                        title: "30文字以内",
+                        icon: "error",
+                        timer: 1500,
+                        timerProgressBar: true,
+                    })
+                    return
+                }
+            } else {
+                Swal.fire({
+                    title: "ユーザー名を入力してください",
+                    icon: "error",
+                    timer: 1500,
+                    timerProgressBar: true,
+                })
+                return
+            }
         }
-        if (data.updateType == "パスワード" && data.password && data.password.length < 8) {
-            Swal.fire({
-                title: "最低8文字以上",
-                icon: "error",
-                timer: 1500,
-                timerProgressBar: true,
-            })
-            return
+        if (data.updateType == "パスワード") {
+            if (data.password) {
+                if (data.password.length < 8) {
+                    Swal.fire({
+                        title: "最低8文字以上",
+                        icon: "error",
+                        timer: 1500,
+                        timerProgressBar: true,
+                    })
+                    return
+                }
+            } else {
+                Swal.fire({
+                    title: "パスワードを入力してください",
+                    icon: "error",
+                    timer: 1500,
+                    timerProgressBar: true,
+                })
+                return
+            }
         }
         setUserLoad(true)
         const request = JSON.stringify(data)

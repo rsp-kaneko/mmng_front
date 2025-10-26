@@ -1,27 +1,14 @@
 "use client"
 
-import CustomContext from "@/app/context/CustomContext"
-import { Avatar, Card, CardContent, CardHeader, Divider, FormControl, FormLabel, Grid, IconButton, InputBase, Paper, Stack } from "@mui/material"
-import { FC, memo, useContext, useEffect } from "react"
+import { Avatar, Card, CardContent, CardHeader, Divider, FormControl, FormLabel, Grid, IconButton, InputBase, Paper } from "@mui/material"
+import { FC, memo } from "react"
 import PersonIcon from '@mui/icons-material/Person'
 import SendIcon from '@mui/icons-material/Send'
 import KeyIcon from '@mui/icons-material/Key'
 import useUser from "@/app/hook/useUser"
 
 const UserInfo: FC = memo(() => {
-    const {REFRESH} = useContext(CustomContext)
     const {userLoad, userData, setUserData, updateUser} = useUser()
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const userName = String(localStorage.getItem("userName"))
-            const userId = Number(localStorage.getItem("userId"))
-            setUserData({
-                userId: userId,
-                userName: userName,
-            })
-        }
-    }, [REFRESH])
 
     const handleSubmit = (updateType: string) => {
         updateUser({...userData, updateType})
