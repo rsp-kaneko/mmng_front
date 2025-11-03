@@ -1,11 +1,11 @@
 "use client"
 
-import { Avatar, Card, CardContent, CardHeader, Divider, FormControl, FormLabel, IconButton, InputBase, Paper, Stack } from "@mui/material"
+import { Avatar, Button, Card, CardContent, CardHeader, FormControl, FormLabel, IconButton, InputBase, Paper, Stack } from "@mui/material"
 import { FC, memo } from "react"
 import SendIcon from '@mui/icons-material/Send'
 import PedalBikeIcon from '@mui/icons-material/PedalBike'
 
-const BikeInfo: FC = memo(() => {
+const CreateBikeCard: FC = memo(() => {
     return (
         <Card variant="outlined" sx={{
             width: "100%",
@@ -17,7 +17,18 @@ const BikeInfo: FC = memo(() => {
                         <PedalBikeIcon />
                     </Avatar>
                 }
-                title="自転車基本スペック"
+                action={
+                    <IconButton>
+                        <Button
+                            size="small"
+                            variant="contained"
+                            startIcon={<SendIcon />}
+                        >
+                            登録
+                        </Button>
+                    </IconButton>
+                }
+                title="自転車の登録"
                 subheader="車体の詳細情報"
             />
             <CardContent>
@@ -39,10 +50,6 @@ const BikeInfo: FC = memo(() => {
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'makerName' }}
                             />
-                            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
                         </Paper>
                     </FormControl>
 
@@ -62,10 +69,6 @@ const BikeInfo: FC = memo(() => {
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'bikeName' }}
                             />
-                            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
                         </Paper>
                     </FormControl>
 
@@ -85,10 +88,6 @@ const BikeInfo: FC = memo(() => {
                                 placeholder="単位：inch"
                                 inputProps={{ 'aria-label': 'size' }}
                             />
-                            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
                         </Paper>
                     </FormControl>
 
@@ -108,10 +107,6 @@ const BikeInfo: FC = memo(() => {
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'wheelBase' }}
                             />
-                            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
                         </Paper>
                     </FormControl>
 
@@ -131,10 +126,6 @@ const BikeInfo: FC = memo(() => {
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'bbShell' }}
                             />
-                            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
                         </Paper>
                     </FormControl>
 
@@ -144,5 +135,5 @@ const BikeInfo: FC = memo(() => {
     )
 })
 
-BikeInfo.displayName = "BikeInfo"
-export default BikeInfo
+CreateBikeCard.displayName = "CreateBikeCard"
+export default CreateBikeCard

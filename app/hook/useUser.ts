@@ -40,7 +40,7 @@ const useUser = () => {
     })
 
     const updateUser = useCallback((data: UserRequest) => {
-        if (data.updateType == "ユーザー名") {
+        if (data.updateType == "userName") {
             if (data.userName) {
                 if (data.userName.length > 30) {
                     Swal.fire({
@@ -61,7 +61,7 @@ const useUser = () => {
                 return
             }
         }
-        if (data.updateType == "パスワード") {
+        if (data.updateType == "password") {
             if (data.password) {
                 if (data.password.length < 8) {
                     Swal.fire({
@@ -87,10 +87,10 @@ const useUser = () => {
         useAxios("post", "/api/updateUser", request)
             .then((response) => {
                 if (response.status == 200) {
-                    if (typeof window !== "undefined" && data.updateType == "ユーザー名") localStorage.setItem("userName", data.userName!)
+                    if (typeof window !== "undefined" && data.updateType == "userName") localStorage.setItem("userName", data.userName!)
                     SET_REFRESH!((cnt) => cnt + 1)
                     Swal.fire({
-                        title: `${data.updateType}を更新しました。`,
+                        title: `更新しました。`,
                         icon: "success",
                         timer: 1500,
                         timerProgressBar: true,

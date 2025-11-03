@@ -52,7 +52,7 @@ const UserInfo: FC = memo(() => {
                                     color="primary"
                                     sx={{ p: '10px' }}
                                     aria-label="submit"
-                                    onClick={() => handleSubmit("ユーザー名")}
+                                    onClick={() => handleSubmit("userName")}
                                     loading={userLoad}
                                 >
                                     <SendIcon />
@@ -85,7 +85,7 @@ const UserInfo: FC = memo(() => {
                                     color="primary"
                                     sx={{ p: '10px' }}
                                     aria-label="submit"
-                                    onClick={() => handleSubmit("パスワード")}
+                                    onClick={() => handleSubmit("password")}
                                     loading={userLoad}
                                 >
                                     <SendIcon />

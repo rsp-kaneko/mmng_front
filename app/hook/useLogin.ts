@@ -68,7 +68,6 @@ const useLogin = () => {
                 }
             })
             .catch((error) => console.error(error))
-            .finally(() => setLoginLoad(false))
     }, [])
 
     const logout = useCallback(() => {
