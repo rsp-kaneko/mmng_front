@@ -28,7 +28,10 @@ const PageContent: FC = () => {
             </Grid>
 
             {bikes.length > 0 && bikes.map((bike) => (
-                <BikeInfo key={bike.bikeId} />
+                <Grid key={bike.bikeId} size={{ xs: 12, md: 6 }}>
+                    <BikeInfo bike={bike} />
+                </Grid>
+
             ))}
 
             {bikes.length == 0 || addCardFlg ? (

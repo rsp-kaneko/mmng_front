@@ -63,8 +63,10 @@ const useLogin = () => {
                         timer: 1500,
                         timerProgressBar: true
                     })
+                    setLoginLoad(false)
                 } else {
                     console.error(response.message)
+                    setLoginLoad(false)
                 }
             })
             .catch((error) => console.error(error))

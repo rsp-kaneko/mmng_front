@@ -43,7 +43,7 @@ const useBike = () => {
     })
 
     const validation = (data: BikeRequest) => {
-        let errMsg = ""
+        let errMsg: string | null = null
         if (data.updateType == "makerName" || data.updateType == "all") {
             const makerName = data.makerName
             if (makerName) {
@@ -94,15 +94,7 @@ const useBike = () => {
                 errMsg = "入力必須"
             }
         }
-        if (errMsg) {
-            Swal.fire({
-                title: errMsg,
-                icon: "error",
-                timer: 1500,
-                timerProgressBar: true,
-            })
-            return
-        }
+        return errMsg
     }
 
     const getMyAllBikes = useCallback((userId: number) => {
@@ -122,7 +114,17 @@ const useBike = () => {
 
     const createBike = useCallback((data: BikeRequest) => {
         setBikeLoad(true)
-        validation(data)
+        const errMsg: string | null = validation(data)
+        if (errMsg) {
+            Swal.fire({
+                title: errMsg,
+                icon: "error",
+                timer: 1500,
+                timerProgressBar: true,
+            })
+            setBikeLoad(false)
+            return
+        }
         const request = JSON.stringify(data)
         useAxios("post", "/api/createBike", request)
             .then((response) => {

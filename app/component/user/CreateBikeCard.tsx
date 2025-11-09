@@ -4,8 +4,15 @@ import { Avatar, Button, Card, CardContent, CardHeader, FormControl, FormLabel, 
 import { FC, memo } from "react"
 import SendIcon from '@mui/icons-material/Send'
 import PedalBikeIcon from '@mui/icons-material/PedalBike'
+import useBike from "@/app/hook/useBike"
 
 const CreateBikeCard: FC = memo(() => {
+    const {bikeLoad, bikeData, setBikeData, createBike} = useBike()
+
+    const handleRegistBike = () => {
+        createBike({...bikeData, updateType: "all"})
+    }
+
     return (
         <Card variant="outlined" sx={{
             width: "100%",
@@ -13,20 +20,20 @@ const CreateBikeCard: FC = memo(() => {
         }}>
             <CardHeader
                 avatar={
-                    <Avatar>
+                    <Avatar sx={{bgcolor: "#07f"}}>
                         <PedalBikeIcon />
                     </Avatar>
                 }
                 action={
-                    <IconButton>
-                        <Button
-                            size="small"
-                            variant="contained"
-                            startIcon={<SendIcon />}
-                        >
-                            登録
-                        </Button>
-                    </IconButton>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        startIcon={<SendIcon />}
+                        loading={bikeLoad}
+                        onClick={handleRegistBike}
+                    >
+                        登録
+                    </Button>
                 }
                 title="自転車の登録"
                 subheader="車体の詳細情報"
@@ -49,6 +56,7 @@ const CreateBikeCard: FC = memo(() => {
                                 type="text"
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'makerName' }}
+                                onChange={(e) => setBikeData({...bikeData, makerName: e.target.value})}
                             />
                         </Paper>
                     </FormControl>
@@ -68,6 +76,7 @@ const CreateBikeCard: FC = memo(() => {
                                 type="text"
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'bikeName' }}
+                                onChange={(e) => setBikeData({...bikeData, bikeName: e.target.value})}
                             />
                         </Paper>
                     </FormControl>
@@ -87,6 +96,7 @@ const CreateBikeCard: FC = memo(() => {
                                 type="number"
                                 placeholder="単位：inch"
                                 inputProps={{ 'aria-label': 'size' }}
+                                onChange={(e) => setBikeData({...bikeData, size: Number(e.target.value)})}
                             />
                         </Paper>
                     </FormControl>
@@ -106,6 +116,7 @@ const CreateBikeCard: FC = memo(() => {
                                 type="number"
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'wheelBase' }}
+                                onChange={(e) => setBikeData({...bikeData, wheelBase: Number(e.target.value)})}
                             />
                         </Paper>
                     </FormControl>
@@ -125,6 +136,7 @@ const CreateBikeCard: FC = memo(() => {
                                 type="number"
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'bbShell' }}
+                                onChange={(e) => setBikeData({...bikeData, bbShell: Number(e.target.value)})}
                             />
                         </Paper>
                     </FormControl>

@@ -23,7 +23,7 @@ const AddBikeCard: FC<Props> = (props) => {
                 ? handleAddCardFlg
                 : undefined
             }
-            sx={addCardFlg ? {
+            sx={bikes.length > 0 && !addCardFlg ? {
                 border: "1px dashed #07f",
                 height: "100%",
                 width: "100%",

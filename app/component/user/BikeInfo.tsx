@@ -1,11 +1,31 @@
 "use client"
 
 import { Avatar, Card, CardContent, CardHeader, Divider, FormControl, FormLabel, IconButton, InputBase, Paper, Stack } from "@mui/material"
-import { FC, memo } from "react"
+import { FC, memo, useEffect } from "react"
 import SendIcon from '@mui/icons-material/Send'
 import PedalBikeIcon from '@mui/icons-material/PedalBike'
+import useBike, { Bike } from "@/app/hook/useBike"
 
-const BikeInfo: FC = memo(() => {
+type Props = {
+    bike: Bike
+}
+
+const BikeInfo: FC<Props> = memo((props) => {
+    const {bike} = props
+    const {bikeLoad, bikeData, setBikeData} = useBike()
+
+    useEffect(() => {
+        setBikeData({
+            ...bikeData,
+            bikeId: bike.bikeId,
+            makerName: bike.makerName,
+            bikeName: bike.bikeName,
+            size: bike.size,
+            wheelBase: bike.wheelBase,
+            bbShell: bike.bbShell,
+        })
+    }, [])
+
     return (
         <Card variant="outlined" sx={{
             width: "100%",
@@ -17,8 +37,8 @@ const BikeInfo: FC = memo(() => {
                         <PedalBikeIcon />
                     </Avatar>
                 }
-                title="自転車基本スペック"
-                subheader="車体の詳細情報"
+                title={`登録車名：${bikeData.bikeName}`}
+                subheader="詳細情報"
             />
             <CardContent>
                 <Stack spacing={3} sx={{px: 3}}>
@@ -38,6 +58,7 @@ const BikeInfo: FC = memo(() => {
                                 type="text"
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'makerName' }}
+                                value={bikeData.makerName}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                             <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
@@ -61,6 +82,7 @@ const BikeInfo: FC = memo(() => {
                                 type="text"
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'bikeName' }}
+                                value={bikeData.bikeName}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                             <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
@@ -84,6 +106,7 @@ const BikeInfo: FC = memo(() => {
                                 type="number"
                                 placeholder="単位：inch"
                                 inputProps={{ 'aria-label': 'size' }}
+                                value={bikeData.size}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                             <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
@@ -107,6 +130,7 @@ const BikeInfo: FC = memo(() => {
                                 type="number"
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'wheelBase' }}
+                                value={bikeData.wheelBase}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                             <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
@@ -130,6 +154,7 @@ const BikeInfo: FC = memo(() => {
                                 type="number"
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'bbShell' }}
+                                value={bikeData.bbShell}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                             <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
