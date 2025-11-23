@@ -1,10 +1,12 @@
 "use client"
 
-import { Avatar, Card, CardContent, CardHeader, Divider, FormControl, FormLabel, IconButton, InputBase, Paper, Stack } from "@mui/material"
+import { Avatar, Button, Card, CardContent, CardHeader, Divider, FormControl, FormLabel, IconButton, InputBase, Paper, Stack } from "@mui/material"
 import { FC, memo, useEffect } from "react"
 import SendIcon from '@mui/icons-material/Send'
 import PedalBikeIcon from '@mui/icons-material/PedalBike'
 import useBike, { Bike } from "@/app/hook/useBike"
+import MessageTooltip from "../common/tooltip/MessageTooltip"
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 
 type Props = {
     bike: Bike
@@ -12,7 +14,7 @@ type Props = {
 
 const BikeInfo: FC<Props> = memo((props) => {
     const {bike} = props
-    const {bikeLoad, bikeData, setBikeData} = useBike()
+    const {bikeLoad, bikeData, setBikeData, bikeMessage, updateBike, deleteBike} = useBike()
 
     useEffect(() => {
         setBikeData({
@@ -26,6 +28,14 @@ const BikeInfo: FC<Props> = memo((props) => {
         })
     }, [])
 
+    const handleUpdateBike = (updateType: string) => {
+        updateBike({...bikeData, updateType})
+    }
+
+    const handleDeleteBike = () => {
+        deleteBike(bikeData)
+    }
+
     return (
         <Card variant="outlined" sx={{
             width: "100%",
@@ -38,6 +48,14 @@ const BikeInfo: FC<Props> = memo((props) => {
                     </Avatar>
                 }
                 title={`登録車名：${bikeData.bikeName}`}
+                action={
+                    <IconButton
+                        onClick={handleDeleteBike}
+                        color="error"
+                    >
+                        <DeleteForeverIcon />
+                    </IconButton>
+                }
                 subheader="詳細情報"
             />
             <CardContent>
@@ -59,11 +77,23 @@ const BikeInfo: FC<Props> = memo((props) => {
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'makerName' }}
                                 value={bikeData.makerName}
+                                onChange={(e) => setBikeData({...bikeData, makerName: e.target.value})}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
+                            <MessageTooltip
+                                open={bikeMessage.type == "makerName"}
+                                title={bikeMessage.message}
+                                status={bikeMessage.status}
+                            >
+                                <IconButton
+                                    color="primary"
+                                    sx={{ p: '10px' }}
+                                    aria-label="submit"
+                                    onClick={() => handleUpdateBike("makerName")}
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </MessageTooltip>
                         </Paper>
                     </FormControl>
 
@@ -83,11 +113,23 @@ const BikeInfo: FC<Props> = memo((props) => {
                                 placeholder="最低1文字以上"
                                 inputProps={{ 'aria-label': 'bikeName' }}
                                 value={bikeData.bikeName}
+                                onChange={(e) => setBikeData({...bikeData, bikeName: e.target.value})}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
+                            <MessageTooltip
+                                open={bikeMessage.type == "bikeName"}
+                                title={bikeMessage.message}
+                                status={bikeMessage.status}
+                            >
+                                <IconButton
+                                    color="primary"
+                                    sx={{ p: '10px' }}
+                                    aria-label="submit"
+                                    onClick={() => handleUpdateBike("bikeName")}
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </MessageTooltip>
                         </Paper>
                     </FormControl>
 
@@ -107,11 +149,23 @@ const BikeInfo: FC<Props> = memo((props) => {
                                 placeholder="単位：inch"
                                 inputProps={{ 'aria-label': 'size' }}
                                 value={bikeData.size}
+                                onChange={(e) => setBikeData({...bikeData, size: Number(e.target.value)})}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
+                            <MessageTooltip
+                                open={bikeMessage.type == "size"}
+                                title={bikeMessage.message}
+                                status={bikeMessage.status}
+                            >
+                                <IconButton
+                                    color="primary"
+                                    sx={{ p: '10px' }}
+                                    aria-label="submit"
+                                    onClick={() => handleUpdateBike("size")}
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </MessageTooltip>
                         </Paper>
                     </FormControl>
 
@@ -131,11 +185,23 @@ const BikeInfo: FC<Props> = memo((props) => {
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'wheelBase' }}
                                 value={bikeData.wheelBase}
+                                onChange={(e) => setBikeData({...bikeData, wheelBase: Number(e.target.value)})}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
+                            <MessageTooltip
+                                open={bikeMessage.type == "wheelBase"}
+                                title={bikeMessage.message}
+                                status={bikeMessage.status}
+                            >
+                                <IconButton
+                                    color="primary"
+                                    sx={{ p: '10px' }}
+                                    aria-label="submit"
+                                    onClick={() => handleUpdateBike("wheelBase")}
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </MessageTooltip>
                         </Paper>
                     </FormControl>
 
@@ -155,11 +221,23 @@ const BikeInfo: FC<Props> = memo((props) => {
                                 placeholder="単位：mm"
                                 inputProps={{ 'aria-label': 'bbShell' }}
                                 value={bikeData.bbShell}
+                                onChange={(e) => setBikeData({...bikeData, bbShell: Number(e.target.value)})}
                             />
                             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                            <IconButton color="primary" sx={{ p: '10px' }} aria-label="submit">
-                                <SendIcon />
-                            </IconButton>
+                            <MessageTooltip
+                                open={bikeMessage.type == "bbShell"}
+                                title={bikeMessage.message}
+                                status={bikeMessage.status}
+                            >
+                                <IconButton
+                                    color="primary"
+                                    sx={{ p: '10px' }}
+                                    aria-label="submit"
+                                    onClick={() => handleUpdateBike("bbShell")}
+                                >
+                                    <SendIcon />
+                                </IconButton>
+                            </MessageTooltip>
                         </Paper>
                     </FormControl>
 

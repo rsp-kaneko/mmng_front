@@ -6,9 +6,10 @@ import PersonIcon from '@mui/icons-material/Person'
 import SendIcon from '@mui/icons-material/Send'
 import KeyIcon from '@mui/icons-material/Key'
 import useUser from "@/app/hook/useUser"
+import MessageTooltip from "../common/tooltip/MessageTooltip"
 
 const UserInfo: FC = memo(() => {
-    const {userLoad, userData, setUserData, updateUser} = useUser()
+    const {userLoad, userData, setUserData, userMessage, updateUser} = useUser()
 
     const handleSubmit = (updateType: string) => {
         updateUser({...userData, updateType})
@@ -48,15 +49,21 @@ const UserInfo: FC = memo(() => {
                                     onChange={(e) => setUserData({...userData, userName: e.target.value})}
                                 />
                                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                                <IconButton
-                                    color="primary"
-                                    sx={{ p: '10px' }}
-                                    aria-label="submit"
-                                    onClick={() => handleSubmit("userName")}
-                                    loading={userLoad}
+                                <MessageTooltip
+                                    open={userMessage.type == "userName"}
+                                    title={userMessage.message}
+                                    status={userMessage.status}
                                 >
-                                    <SendIcon />
-                                </IconButton>
+                                    <IconButton
+                                        color="primary"
+                                        sx={{ p: '10px' }}
+                                        aria-label="submit"
+                                        onClick={() => handleSubmit("userName")}
+                                        loading={userLoad}
+                                    >
+                                        <SendIcon />
+                                    </IconButton>
+                                </MessageTooltip>
                             </Paper>
                         </FormControl>
                     </Grid>
@@ -81,15 +88,21 @@ const UserInfo: FC = memo(() => {
                                     onChange={(e) => setUserData({...userData, password: e.target.value})}
                                 />
                                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                                <IconButton
-                                    color="primary"
-                                    sx={{ p: '10px' }}
-                                    aria-label="submit"
-                                    onClick={() => handleSubmit("password")}
-                                    loading={userLoad}
+                                <MessageTooltip
+                                    open={userMessage.type == "password"}
+                                    title={userMessage.message}
+                                    status={userMessage.status}
                                 >
-                                    <SendIcon />
-                                </IconButton>
+                                    <IconButton
+                                        color="primary"
+                                        sx={{ p: '10px' }}
+                                        aria-label="submit"
+                                        onClick={() => handleSubmit("password")}
+                                        loading={userLoad}
+                                    >
+                                        <SendIcon />
+                                    </IconButton>
+                                </MessageTooltip>
                             </Paper>
                         </FormControl>
                     </Grid>

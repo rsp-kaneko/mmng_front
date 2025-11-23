@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from "react"
 import useAxios from "./useAxios"
-import Swal from "sweetalert2"
 import CustomContext from "../context/CustomContext"
+import { MessageTooltipRequest } from "../component/common/tooltip/MessageTooltip"
 
 export type Role = {
     roleId: number
@@ -31,6 +31,11 @@ const useUser = () => {
     const { SET_REFRESH, USER_ID, USER_NAME } = useContext(CustomContext)
     const [userLoad, setUserLoad] = useState(false)
     const [users, setUsers] = useState<Array<User>>([])
+    const [userMessage, setUserMessage] = useState<MessageTooltipRequest>({
+        type: "",
+        message: "",
+        status: "info",
+    })
     const [userData, setUserData] = useState<UserRequest>({
         updateType: "",
         userId: USER_ID,
@@ -39,61 +44,55 @@ const useUser = () => {
         token: "",
     })
 
-    const updateUser = useCallback((data: UserRequest) => {
+    /**
+     * Error Message
+     */
+    const validation = (data: UserRequest) => {
+        let errMsg = ""
+
         if (data.updateType == "userName") {
             if (data.userName) {
                 if (data.userName.length > 30) {
-                    Swal.fire({
-                        title: "30文字以内",
-                        icon: "error",
-                        timer: 1500,
-                        timerProgressBar: true,
-                    })
-                    return
+                    errMsg = "30文字以内"
                 }
             } else {
-                Swal.fire({
-                    title: "ユーザー名を入力してください",
-                    icon: "error",
-                    timer: 1500,
-                    timerProgressBar: true,
-                })
-                return
+                errMsg = "入力必須"
             }
         }
         if (data.updateType == "password") {
             if (data.password) {
                 if (data.password.length < 8) {
-                    Swal.fire({
-                        title: "最低8文字以上",
-                        icon: "error",
-                        timer: 1500,
-                        timerProgressBar: true,
-                    })
-                    return
+                    errMsg = "最低8文字以上"
                 }
             } else {
-                Swal.fire({
-                    title: "パスワードを入力してください",
-                    icon: "error",
-                    timer: 1500,
-                    timerProgressBar: true,
-                })
-                return
+                errMsg = "入力必須"
             }
         }
+
+        return errMsg
+    }
+
+    const updateUser = useCallback((data: UserRequest) => {
+        const errMsg: string = validation(data)
+        if (errMsg != "") {
+            setUserMessage({
+                type: data.updateType!,
+                status: "error",
+                message: errMsg,
+            })
+            return
+        }
+
         setUserLoad(true)
         const request = JSON.stringify(data)
         useAxios("post", "/api/updateUser", request)
             .then((response) => {
                 if (response.status == 200) {
                     if (typeof window !== "undefined" && data.updateType == "userName") localStorage.setItem("userName", data.userName!)
-                    SET_REFRESH!((cnt) => cnt + 1)
-                    Swal.fire({
-                        title: `更新しました。`,
-                        icon: "success",
-                        timer: 1500,
-                        timerProgressBar: true,
+                    setUserMessage({
+                        type: data.updateType!,
+                        status: "success",
+                        message: "更新しました"
                     })
                 } else {
                     console.error(response.messages)
@@ -107,6 +106,7 @@ const useUser = () => {
         userLoad,
         users,
         userData,
+        userMessage,
         setUserData,
         updateUser,
     }

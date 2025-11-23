@@ -1,13 +1,19 @@
 "use client"
 
 import { Avatar, Button, Card, CardContent, CardHeader, FormControl, FormLabel, IconButton, InputBase, Paper, Stack } from "@mui/material"
-import { FC, memo } from "react"
+import { FC, memo, useContext, useEffect } from "react"
 import SendIcon from '@mui/icons-material/Send'
 import PedalBikeIcon from '@mui/icons-material/PedalBike'
 import useBike from "@/app/hook/useBike"
+import CustomContext from "@/app/context/CustomContext"
 
 const CreateBikeCard: FC = memo(() => {
-    const {bikeLoad, bikeData, setBikeData, createBike} = useBike()
+    const {REFRESH} = useContext(CustomContext)
+    const {bikeLoad, bikeData, setBikeData, resetBikeForm, createBike} = useBike()
+
+    useEffect(() => {
+        resetBikeForm(setBikeData)
+    }, [REFRESH])
 
     const handleRegistBike = () => {
         createBike({...bikeData, updateType: "all"})

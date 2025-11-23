@@ -16,6 +16,7 @@ const PageContent: FC = () => {
 
     useEffect(() => {
         getMyAllBikes(USER_ID!)
+        setAddCardFlg(false)
     }, [REFRESH])
 
     const handleAddCardFlg = () => setAddCardFlg(true)
