@@ -14,7 +14,7 @@ type Props = {
 
 const BikeInfo: FC<Props> = memo((props) => {
     const {bike} = props
-    const {bikeLoad, bikeData, setBikeData, bikeMessage, updateBike, deleteBike} = useBike()
+    const {bikeData, setBikeData, bikeMessage, updateBike, deleteBike} = useBike()
 
     useEffect(() => {
         setBikeData({
