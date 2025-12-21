@@ -18,13 +18,15 @@ type Props = {
 const CreatePartsModal: FC<Props> = memo((props) => {
     const {open, onClose} = props
     const {USER_ID} = useContext(CustomContext)
-    const {getAllPartsCategories, partsCategories} = useParts()
+    const {getAllPartsCategories, partsCategories, partsData, setPartsData, partsLoad, partsError, createParts} = useParts()
     const {bikes, getMyAllBikes} = useBike()
 
     useEffect(() => {
         getAllPartsCategories()
         getMyAllBikes(USER_ID!)
     }, [])
+
+    const handleCreateParts = () => createParts(partsData)
 
     return (
         <Modal open={open} onClose={onClose}>
