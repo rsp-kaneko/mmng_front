@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react"
+import { Dispatch, SetStateAction, useCallback, useContext, useState } from "react"
 import useAxios from "./useAxios"
 import { Bike } from "./useBike"
 import Swal from "sweetalert2"
@@ -33,6 +33,14 @@ export type PartsRequest = {
     price?: number
 }
 
+export type PartsError = {
+    bikeId: string
+    partsCategoryId: string
+    partsName: string
+    changeDate: string
+    price: string
+}
+
 const useParts = () => {
     const {SET_REFRESH} = useContext(CustomContext)
     const [partsLoad, setPartsLoad] = useState(false)
@@ -46,7 +54,7 @@ const useParts = () => {
         changeDate: "",
         price: 0,
     })
-    const [partsError, setPartsError] = useState({
+    const [partsError, setPartsError] = useState<PartsError>({
         bikeId: "",
         partsCategoryId: "",
         partsName: "",
@@ -55,37 +63,50 @@ const useParts = () => {
     })
 
     /**
-         * エラーメッセージ
-         */
-        const validation = (data: PartsRequest) => {
-            let errorFlg: boolean = false
-            if (data.bikeId === 0) {
-                errorFlg = true
-                setPartsError({...partsError, bikeId: "選択必須"})
-            }
-            if (data.partsCategoryId === 0) {
-                errorFlg = true
-                setPartsError({...partsError, partsCategoryId: "選択必須"})
-            }
-            if (data.partsName === "") {
-                errorFlg = true
-                setPartsError({...partsError, partsName: "必須"})
-            } else {
-                if (data.partsName!.length > 100) {
-                    errorFlg = true
-                    setPartsError({...partsError, partsName: "100文字以内"})
-                }
-            }
-            if (data.changeDate === "") {
-                errorFlg = true
-                setPartsError({...partsError, changeDate: "必須"})
-            }
-            if (data.price! < 1) {
-                errorFlg = true
-                setPartsError({...partsError, price: "￥1以上"})
-            }
-            return errorFlg
+     * エラーメッセージ
+     */
+    const validation = useCallback((data: PartsRequest) => {
+        let errorFlg: boolean = false
+        let bikeId = ""
+        let partsCategoryId = ""
+        let partsName = ""
+        let changeDate = ""
+        let price = ""
+        if (data.partsCategoryId === 0) {
+            errorFlg = true
+            partsCategoryId = "選択必須"
         }
+        if (data.bikeId === 0) {
+            errorFlg = true
+            bikeId = "選択必須"
+        }
+        if (data.partsName === "") {
+            errorFlg = true
+            partsName = "必須"
+        } else {
+            if (data.partsName!.length > 100) {
+                errorFlg = true
+                partsName = "100文字以内"
+            }
+        }
+        if (data.changeDate === "") {
+            errorFlg = true
+            changeDate = "必須"
+        }
+        if (data.price! < 1) {
+            errorFlg = true
+            price = "￥1以上"
+        }
+
+        setPartsError({
+            partsCategoryId,
+            bikeId,
+            partsName,
+            changeDate,
+            price,
+        })
+        return errorFlg
+    }, [])
 
     /**
      * PartsCategory全取得
@@ -105,13 +126,17 @@ const useParts = () => {
     /**
      * Parts 登録
      */
-    const createParts = useCallback((data: PartsRequest) => {
+    const createParts = useCallback((data: PartsRequest, onCloseModal: () => void) => {
         setPartsLoad(true)
-        if (validation(data)) return
+        if (validation(data)) {
+            setPartsLoad(false)
+            return
+        }
         const request = JSON.stringify(data)
         useAxios("post", "/api/createParts", request)
             .then((response) => {
                 if (response.status == 200) {
+                    onCloseModal()
                     SET_REFRESH!((refresh) => refresh + 1)
                     Swal.fire({
                         title: "パーツが登録されました",
@@ -125,7 +150,7 @@ const useParts = () => {
             })
             .catch((error) => console.error(error))
             .finally(() => setPartsLoad(false))
-    }, [])
+    }, [validation, SET_REFRESH])
 
     return {
         partsLoad,

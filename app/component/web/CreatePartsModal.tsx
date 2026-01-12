@@ -1,8 +1,8 @@
 "use client"
 
 import useParts from "@/app/hook/useParts"
-import { Box, Button, Divider, FormControl, FormLabel, IconButton, InputBase, MenuItem, Modal, Paper, Stack, TextField, Typography } from "@mui/material"
-import { FC, memo, useContext, useEffect } from "react"
+import { Box, Button, Divider, FormControl, FormHelperText, FormLabel, IconButton, InputBase, MenuItem, Modal, Paper, Stack, TextField, Typography } from "@mui/material"
+import { FC, memo, useContext, useEffect, useState } from "react"
 import CancelIcon from '@mui/icons-material/Cancel'
 import useBike from "@/app/hook/useBike"
 import CustomContext from "@/app/context/CustomContext"
@@ -18,15 +18,33 @@ type Props = {
 const CreatePartsModal: FC<Props> = memo((props) => {
     const {open, onClose} = props
     const {USER_ID} = useContext(CustomContext)
-    const {getAllPartsCategories, partsCategories, partsData, setPartsData, partsLoad, partsError, createParts} = useParts()
-    const {bikes, getMyAllBikes} = useBike()
+    const [bikeIdErrStyle, setBikeIdErrStyle] = useState("")
+    const {
+        bikes,
+        getMyAllBikes
+    } = useBike()
+    const {
+        getAllPartsCategories,
+        partsCategories,
+        partsData,
+        setPartsData,
+        partsLoad,
+        partsError,
+        createParts,
+    } = useParts()
 
+    // パーツカテゴリー、バイクデータ読み込み
     useEffect(() => {
         getAllPartsCategories()
         getMyAllBikes(USER_ID!)
     }, [])
 
-    const handleCreateParts = () => createParts(partsData)
+    // バイク選択エラー発生時、フォームエラースタイル適用
+    useEffect(() => {
+        setBikeIdErrStyle(partsError.bikeId !== "" ? "1px solid #f00" : "")
+    }, [partsError.bikeId])
+
+    const handleCreateParts = () => createParts(partsData, onClose)
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -61,8 +79,10 @@ const CreatePartsModal: FC<Props> = memo((props) => {
                             <TextField
                                 label="パーツカテゴリー"
                                 select
-                                defaultValue=""
+                                value={partsData.partsCategoryId}
+                                onChange={(e) => setPartsData({...partsData, partsCategoryId: Number(e.target.value)})}
                                 variant="standard"
+                                error={partsError.partsCategoryId !== ""}
                             >
                                 {partsCategories.length > 0 && partsCategories.map((category) => (
                                     <MenuItem key={category.partsCategoryId} value={category.partsCategoryId}>
@@ -70,20 +90,29 @@ const CreatePartsModal: FC<Props> = memo((props) => {
                                     </MenuItem>
                                 ))}
                             </TextField>
+                            <FormHelperText sx={{color: "#f00"}}>{partsError.partsCategoryId}</FormHelperText>
                         </FormControl>
                         <FormControl>
                             <Box sx={{
                                 display: "flex",
                                 alignItems: "center",
+                                justifyContent: "space-between",
                                 gap: 1,
                                 flexWrap: "wrap",
+                                border: bikeIdErrStyle,
                             }}>
                                 {bikes.length > 0 && bikes.map((bike) => (
-                                    <SelectBikeItemCard key={bike.bikeId} bike={bike} />
+                                    <SelectBikeItemCard
+                                        key={bike.bikeId}
+                                        bike={bike}
+                                        partsData={partsData}
+                                        setPartsData={setPartsData}
+                                    />
                                 ))}
                             </Box>
+                            <FormHelperText sx={{color: "#f00"}}>{partsError.bikeId}</FormHelperText>
                         </FormControl>
-                        <FormControl>
+                        <FormControl error={partsError.partsName !== ""}>
                             <FormLabel sx={{fontSize: "0.9em"}}>パーツ名</FormLabel>
                             <Paper
                                 variant="outlined"
@@ -98,9 +127,11 @@ const CreatePartsModal: FC<Props> = memo((props) => {
                                     type="text"
                                     placeholder="最低1文字以上"
                                     inputProps={{ 'aria-label': 'partsName' }}
-                                    onChange={undefined}
+                                    value={partsData.partsName}
+                                    onChange={(e) => setPartsData({...partsData, partsName: e.target.value})}
                                 />
                             </Paper>
+                            <FormHelperText sx={{color: "#f00"}}>{partsError.partsName}</FormHelperText>
                         </FormControl>
                         <Box sx={{
                             display: "flex",
@@ -111,7 +142,7 @@ const CreatePartsModal: FC<Props> = memo((props) => {
                                 flexDirection: "column",
                             }
                         }}>
-                            <FormControl fullWidth>
+                            <FormControl fullWidth error={partsError.changeDate !== ""}>
                                 <FormLabel sx={{fontSize: "0.9em"}}>交換日</FormLabel>
                                 <Paper
                                     variant="outlined"
@@ -126,11 +157,13 @@ const CreatePartsModal: FC<Props> = memo((props) => {
                                         type="date"
                                         placeholder=""
                                         inputProps={{ 'aria-label': 'changeDate' }}
-                                        onChange={undefined}
+                                        value={partsData.changeDate}
+                                        onChange={(e) => setPartsData({...partsData, changeDate: e.target.value})}
                                     />
                                 </Paper>
+                                <FormHelperText sx={{color: "#f00"}}>{partsError.changeDate}</FormHelperText>
                             </FormControl>
-                            <FormControl fullWidth>
+                            <FormControl fullWidth error={partsError.price !== ""}>
                                 <FormLabel sx={{fontSize: "0.9em"}}>値段</FormLabel>
                                 <Paper
                                     variant="outlined"
@@ -145,13 +178,22 @@ const CreatePartsModal: FC<Props> = memo((props) => {
                                         type="number"
                                         placeholder="最低1円以上"
                                         inputProps={{ 'aria-label': 'price' }}
-                                        onChange={undefined}
+                                        value={partsData.price}
+                                        onChange={(e) => setPartsData({...partsData, price: Number(e.target.value)})}
                                     />
                                 </Paper>
+                                <FormHelperText sx={{color: "#f00"}}>{partsError.price}</FormHelperText>
                             </FormControl>
                         </Box>
                         <FormControl sx={{pt: 4}}>
-                            <Button variant="contained" startIcon={<SendIcon />}>追加</Button>
+                            <Button
+                                loading={partsLoad}
+                                onClick={handleCreateParts}
+                                variant="contained"
+                                startIcon={<SendIcon />}
+                            >
+                                追加
+                            </Button>
                         </FormControl>
                     </Stack>
                 </Box>

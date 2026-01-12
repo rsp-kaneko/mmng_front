@@ -2,25 +2,37 @@
 
 import { Bike } from "@/app/hook/useBike"
 import { Box, Card, CardContent, Typography } from "@mui/material"
-import { FC } from "react"
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
 import PedalBikeIcon from '@mui/icons-material/PedalBike'
+import { PartsRequest } from "@/app/hook/useParts"
 
 
 type Props = {
     bike: Bike
+    partsData: PartsRequest
+    setPartsData: Dispatch<SetStateAction<PartsRequest>>
 }
 
 const SelectBikeItemCard: FC<Props> = (props) => {
-    const {bike} = props
+    const {bike, partsData, setPartsData} = props
+    const [bgColor, setBgColor] = useState("")
+
+    useEffect(() => {
+        setBgColor(partsData.bikeId == bike.bikeId ? "#7af" : "#ddd")
+    }, [partsData.bikeId])
+
+    const handleClickAction = () => setPartsData({...partsData, bikeId: Number(bike.bikeId)})
 
     return (
         <Card sx={{
             width: 340,
-            backgroundColor: "#ddd",
+            backgroundColor: bgColor,
             "@media screen and (max-width: 900px)": {
                 width: "100%",
             }
-        }}>
+        }}
+            onClick={handleClickAction}
+        >
             <CardContent sx={{
                 display: "flex",
                 alignItems: "center",
